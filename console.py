@@ -12,6 +12,24 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+def is_float(s):
+    """ true if float, otherwise false"""
+    try:
+        float(s)
+        return True and '.' in s
+    except ValueError:
+        return False
+
+
+def is_int(s):
+    """ function to check if string represents int """
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
