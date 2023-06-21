@@ -14,6 +14,7 @@ from models.city import City
 
 
 class DBStorage:
+    """Create SQLalchemy Database"""
     __engine = None
     __session = None
 

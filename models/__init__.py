@@ -12,13 +12,12 @@ from models.amenity import Amenity
 from models.review import Review
 
 
-envv = getenv("HBNB_TYPE_STORAGE", "fs")
-if envv == "db":
-    from models.engine.db_storage import DBStorage
-    storage = DBStorage()
+if getenv("HBNB_TYPE_STORAGE", "fs") == "db":
+    from models.engine import db_storage
+    storage = db_storage.DBStorage()
 else:
-    from models.engine.file_storage import FileStorage
-    storage = FileStorage()
+    from models.engine import file_storage
+    storage = file_storage.FileStorage()
 
 classes = {"User": User, "BaseModel": BaseModel,
            "Place": Place, "State": State,
