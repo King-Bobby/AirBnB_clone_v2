@@ -8,7 +8,7 @@ from os import getenv
 from sqlalchemy.orm import relationship
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """This class defines a user by various attributes"""
     __tablename__ = "users"
     if getenv("HBNB_TYPE_STORAGE", "fs") == "db":
