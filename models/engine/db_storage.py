@@ -5,7 +5,7 @@ Defines Class DatabaseStorage/DBstorage
 
 
 from os import getenv
-from sqlalchemy import create_engine, Metadata
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
 import models
 from models.base_model import Base
