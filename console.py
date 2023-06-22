@@ -20,6 +20,7 @@ def is_float(s):
     except ValueError:
         return False
 
+
 def is_int(s):
     """ function to check if string represents int """
     try:
