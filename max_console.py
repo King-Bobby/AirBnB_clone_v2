@@ -2,7 +2,6 @@
 """ Console Module """
 import cmd
 import sys
-import shlex
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -13,22 +12,41 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+def is_float(s):
+    """ true if float, otherwise false"""
+    try:
+        float(s)
+        return True and '.' in s
+    except ValueError:
+        return False
+
+
+def is_int(s):
+    """ function to check if string represents int """
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
+
     # determines prompt for interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
-        'BaseModel': BaseModel, 'User': User, 'Place': Place,
-        'State': State, 'City': City, 'Amenity': Amenity,
-        'Review': Review
-    }
+               'BaseModel': BaseModel, 'User': User, 'Place': Place,
+               'State': State, 'City': City, 'Amenity': Amenity,
+               'Review': Review
+              }
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
-        'number_rooms': int, 'number_bathrooms': int,
-        'max_guest': int, 'price_by_night': int,
-        'latitude': float, 'longitude': float
-    }
+             'number_rooms': int, 'number_bathrooms': int,
+             'max_guest': int, 'price_by_night': int,
+             'latitude': float, 'longitude': float
+            }
 
     def preloop(self):
         """Prints if isatty is false"""
@@ -74,7 +92,7 @@ class HBNBCommand(cmd.Cmd):
                 if pline:
                     # check for *args or **kwargs
                     if pline[0] == '{' and pline[-1] == '}'\
-                            and type(eval(pline)) == dict:
+                            and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
@@ -115,35 +133,33 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if len(args) == 0:
+        argv = args.split()
+        if not argv:
             print("** class name missing **")
             return
-        try:
-            args_list = shlex.split(args)
-            # ['State', 'name=California']
-            new_dict = {}
-            for elem in args_list[1:]:
-                new_arg = elem.split("=")
-                # ['name', 'California']
-                new_dict[new_arg[0]] = new_arg[1]
-                # new_dict[name] = 'California'
-
-            new_instance = HBNBCommand.classes[args_list[0]]()
-            for key, value in new_dict.items():
-                if "_" in value:
-                    value = value.replace("_", " ")
-                else:
-                    try:
-                        value = eval(value)
-                    except BaseException:
-                        pass
-
-                if hasattr(new_instance, key):
-                    setattr(new_instance, key, value)
-            print(new_instance.id)
-            new_instance.save()
-        except Exception as e:
+        elif argv[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
+            return
+        new = HBNBCommand.classes[argv[0]]()
+        for i in range(1, len(argv)):
+            tmp = argv[i].split('=')
+            key = tmp[0]
+            value = tmp[1]
+            if '"' in value:
+                value = filter(None, value.split('"'))
+                string = ""
+                for s in value:
+                    if (s[-1] == '\\'):
+                        s[-1] = '"'
+                    string += s
+                string = string.replace('_', ' ')
+                setattr(new, key, string)
+            elif is_int(value):
+                setattr(new, key, int(value))
+            elif is_float(value):
+                setattr(new, key, float(value))
+        new.save()
+        print(new.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -231,6 +247,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             for k, v in storage.all().items():
                 print_list.append(str(v))
+
         print(print_list)
 
     def help_all(self):
@@ -247,7 +264,7 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def help_count(self):
-        """count the number of instanciations """
+        """ """
         print("Usage: count <class_name>")
 
     def do_update(self, args):
