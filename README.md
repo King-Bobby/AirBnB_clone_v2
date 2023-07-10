@@ -142,6 +142,6 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 
 <h4>Collaborators for this team project</h4>
 <h6>1 - Emmanuel Akejelu (emmanuelakej@gmail.com)</h6>
-<h6>2 - Noel BROWN (noelbrowndaboss@gmail.com)</h6>
+<h6>2 - Noel BROWN (noelbrowndboss@gmail.com)</h6>
 
 <br>
